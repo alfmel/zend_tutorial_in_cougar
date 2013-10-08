@@ -1,0 +1,46 @@
+<?php
+
+namespace ZendTutorialInCougar;
+
+use Cougar\Autoload\FlexAutoload;
+use Cougar\Security\Security;
+use Cougar\Cache\CacheFactory;
+use Cougar\PDO\PDO;
+use Cougar\RestService\AnnotatedRestService;
+
+// Initialize the Cougar framework
+require_once("cougar.php");
+ 
+// Autoload classes from the project
+FlexAutoload::addPath(__DIR__, 2);
+ 
+// Create a new Security context (required by Model Factory and Rest Service)
+$security = new Security();
+
+// Get a new cache
+$cache = CacheFactory::getApplicationCache();
+
+// Connect to the database
+$pdo = new PDO("sqlite:" . __DIR__ . "/../../db/zend_tutorial.db");
+
+// Create the Album Model factory
+$album_model_factory = new AlbumModelFactory($security, $cache, $pdo);
+
+// Create a new Album object
+$album_object = new Album($security, $album_model_factory);
+
+// Create the AnnotatedWebService object; it will handle the incoming REST
+// requests
+$service = new AnnotatedRestService($security);
+
+// Add the PDO to the service's transaction coordinator
+$service->addTransactionCoordinator($pdo);
+ 
+// Tell the service object to bind web services from our Album object
+$service->bindFromObject($album_object);
+
+// Finally, tell the service object to handle the REST request; this is a
+// terminal call; execution will stop here whether the service call was
+// successful or not
+$service->handleRequest();
+?>
