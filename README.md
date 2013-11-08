@@ -17,8 +17,8 @@ We believe the APIs written with Cougar are simpler to write and manage. They
 also requires less lines of code.
 
 To write the API backend for the ZF2 tutorial in Cougar, it takes 5 files and
-about 150 lines of code (101 lines in PHP and about 40 in required annotations
-in the comments).
+about 150 lines of code (101 lines in PHP and 48 required annotations in the
+comments).
 
 ```
 $ cloc lib web
